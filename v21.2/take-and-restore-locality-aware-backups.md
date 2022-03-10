@@ -26,7 +26,7 @@ A locality-aware backup is specified by a list of URIs, each of which has a `COC
 The locality query string parameters must be [URL-encoded](https://en.wikipedia.org/wiki/Percent-encoding).
 {{site.data.alerts.end}}
 
-During locality-aware backups, backup file placement is determined by [leaseholder](architecture/replication-layer.html#leases) placement, as each node is responsible for backing up the ranges for which it is the leaseholder. Nodes write files to the backup storage location whose locality matches their own node localities, with a preference for more specific values in the locality hierarchy. If there is no match, the `default` locality is used.
+Since each node is responsible for backing up the ranges for which it is the [leaseholder](architecture/replication-layer.html#leases), in a locality-aware backup, the locality of the leaseholder node determines where the backup files will be placed. The leaseholder node writes files to the backup storage location with a locality that matches its own localities (with an overall preference for more specific values in the locality hierarchy). If there is no match, the `default` locality is used.
 
 ## Create a locality-aware backup
 
@@ -69,7 +69,7 @@ region=us-east,az=az1
 (1 row)
 ~~~
 
-The output shows the locality to which the node will write backup data. One of the single locality key-value pairs can be passed to `BACKUP` with the `COCKROACH_LOCALITY` parameter—for example, `'s3://us-east-bucket?COCKROACH_LOCALITY=region%3Dus-east'`.
+The output shows the locality to which the node will write backup data. One of the single locality key-value pairs can be passed to `BACKUP` with the `COCKROACH_LOCALITY` parameter (e.g., `'s3://us-east-bucket?COCKROACH_LOCALITY=region%3Dus-east'`).
 
 {{site.data.alerts.callout_info}}
 Specifying both locality tier pairs (e.g., `region=east,az=az1`) from the output will cause the backup query to fail with: `tier must be in the form "key=value"`.
